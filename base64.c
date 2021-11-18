@@ -1,10 +1,10 @@
 #include "base64.h"
 
-void
+size_t
 base64_encode(char *dst, const unsigned char *src, size_t len)
 {
 	static const char b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
+	const char *start = dst; 
 	for (size_t i = 0; i < len; i += 3, dst += 4) {
 		unsigned long x = (src[i] & 0xfful) << 16;
 		dst[3] = i + 2 >= len ? '=' : b64[(x |= src[i + 2] & 0xfful) & 0x3f];
@@ -13,6 +13,7 @@ base64_encode(char *dst, const unsigned char *src, size_t len)
 		dst[0] = b64[x >> 18];
 	}
 	*dst = '\0';
+	return (dst - start);
 }
 
 size_t
